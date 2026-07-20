@@ -315,6 +315,7 @@ export default function useEventHandlers({
     resetSubagentAtoms,
     syncStepMessage,
     cancelPendingDeltaFlush,
+    flushPendingDeltas,
   } = useStepHandler({
     setMessages,
     getMessages,
@@ -1124,6 +1125,7 @@ export default function useEventHandlers({
     titleHandler,
     syncStepMessage,
     cancelPendingDeltaFlush,
+    flushPendingDeltas,
     attachmentHandler,
     abortConversation,
     resetContentHandler,
