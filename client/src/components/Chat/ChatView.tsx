@@ -24,6 +24,7 @@ import ChatForm from './Input/ChatForm';
 import Landing from './Landing';
 import Header from './Header';
 import Footer from './Footer';
+import NimbusCompanion from './NimbusCompanion/NimbusCompanion';
 import { cn } from '~/utils';
 import store from '~/store';
 
@@ -134,6 +135,7 @@ function ChatView({ index = 0, project }: { index?: number; project?: TChatProje
           </Presentation>
         </AddedChatContext.Provider>
       </ChatContext.Provider>
+      <NimbusCompanion state={isSubmitting ? 'building' : isLoading ? 'thinking' : 'ready'} />
     </ChatFormProvider>
   );
 }
