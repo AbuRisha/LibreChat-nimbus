@@ -9,9 +9,15 @@
 # Specific patterns to ignore
 data-node
 meili_data*
-librechat*
 Dockerfile*
 docs
+
+# Allow librechat.yaml + related config (Nimbus fork bakes config into image
+# instead of mounting at runtime). Exclude any generated variants.
+!librechat.yaml
+!nimbus-skills.json
+librechat-*.yaml
+librechat.local.yaml
 
 # Ignore all hidden files
 .*
