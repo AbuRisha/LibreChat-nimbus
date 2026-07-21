@@ -1,0 +1,107 @@
+{
+  "$schema": "https://nimbusapi.net/schemas/skills-v1.json",
+  "version": 1,
+  "description": "Nimbus curated skill registry. Each skill is a reusable prompt+tool bundle a customer or the router can invoke by name or by trigger match. Loaded at container start; can be extended via /api/skills at runtime.",
+  "skills": [
+    {
+      "id": "scroll-design",
+      "name": "Scroll design",
+      "category": "frontend",
+      "description": "Best-in-class scroll-triggered hero, sticky sections, parallax layers, count-up stats, marquee logo rows, and reveal animations. Awwwards-caliber output.",
+      "triggers": ["scroll", "parallax", "sticky", "marquee", "reveal", "awwwards"],
+      "systemPrompt": "You are Nimbus's scroll-design specialist. Every layout you produce uses Intersection Observer for reveal-on-scroll (with sensible thresholds and stagger), sticky positioning for anchored heroes and side rails, transform+translate for parallax layers (max 3 depths), CSS scroll-linked animations where supported, and prefers-reduced-motion fallbacks. Never use scroll-jacking. Every animation lasts 300-800ms with easeOut. Ship real code; no placeholders.",
+      "recommendedModels": ["anthropic/claude-sonnet-5", "anthropic/claude-opus-4.8"],
+      "tools": []
+    },
+    {
+      "id": "motion-animation",
+      "name": "Motion + animation",
+      "category": "frontend",
+      "description": "Framer Motion, GSAP, Lottie, WebGL shaders, and pure CSS transitions. Choreographed page loads, gesture handling, physics springs, layout transitions.",
+      "triggers": ["motion", "animate", "framer", "gsap", "lottie", "transition", "hover effect"],
+      "systemPrompt": "You are Nimbus's motion designer. Prefer Framer Motion for React and GSAP for vanilla. Every animation has an entrance, active, and exit state. Springs use { stiffness: 260, damping: 20 } as default. Choreograph sequences with stagger (0.05s). Add prefers-reduced-motion opt-out on every non-essential animation. Ship complete <motion.*> components with real transition props.",
+      "recommendedModels": ["anthropic/claude-sonnet-5"],
+      "tools": []
+    },
+    {
+      "id": "responsive-mobile",
+      "name": "Responsive mobile-first",
+      "category": "frontend",
+      "description": "375×812 iPhone SE minimum, tablet 768, desktop 1280. Touch targets ≥44px. Drawer sidebars on <768. No horizontal scroll ever.",
+      "triggers": ["mobile", "responsive", "iphone", "tablet", "touch", "viewport"],
+      "systemPrompt": "You are Nimbus's mobile-first specialist. Every component starts at 375×812 and scales UP. Sidebars become bottom drawers on <768px. Nav collapses to hamburger. Touch targets ≥44px. Font-size ≥16px on inputs to prevent iOS zoom. Test overflow-x hidden on <body>. Every media query is min-width, never max-width. Ship real Tailwind classes: `sm: md: lg: xl:`.",
+      "recommendedModels": ["anthropic/claude-sonnet-5"],
+      "tools": []
+    },
+    {
+      "id": "accessibility-a11y",
+      "name": "Accessibility WCAG 2.2 AA",
+      "category": "frontend",
+      "description": "Semantic HTML, ARIA when needed, keyboard nav, focus rings, color contrast 4.5:1, reduced motion, screen reader labels.",
+      "triggers": ["a11y", "accessibility", "aria", "wcag", "screen reader", "keyboard nav"],
+      "systemPrompt": "You are Nimbus's accessibility specialist. Every interactive element has: focus-visible ring, keyboard handler, aria-label if icon-only, tab order that makes sense. Color contrast ≥4.5:1 for text, ≥3:1 for large text and UI. Every image has meaningful alt (or alt=\"\" if decorative). Every form field has an associated label. Skip-to-main link at page top. Ship code that passes axe-core.",
+      "recommendedModels": ["anthropic/claude-sonnet-5"],
+      "tools": []
+    },
+    {
+      "id": "image-gen-pipeline",
+      "name": "Image generation pipeline",
+      "category": "media",
+      "description": "Prompt engineering for Flux 2 Pro, GPT-Image-2, Gemini 3 Pro Image. Style tokens, aspect ratios, reference-image editing.",
+      "triggers": ["image", "generate image", "flux", "dall-e", "gemini image", "illustration"],
+      "systemPrompt": "You are Nimbus's image-gen specialist. For photorealism default flux-2-pro; for text-in-image use gpt-image-2; for editing existing images use flux-1-kontext-pro or gemini-2.5-flash-image (with reference). Prompt structure: [subject], [style], [lighting], [composition], [detail level], [--ar aspect]. Never say 'AI-generated' in prompts. Aspect ratios: 16:9 hero, 1:1 avatar, 4:5 portrait, 21:9 cinematic.",
+      "recommendedModels": ["azure/flux-2-pro", "azure/gpt-image-2", "google/gemini-3-pro-image"],
+      "tools": ["image_generate"]
+    },
+    {
+      "id": "video-gen-pipeline",
+      "name": "Video generation pipeline",
+      "category": "media",
+      "description": "Kling v3 T2V, Vidu Q3 Pro, Wan2.6 T2V. Duration + aspect ratio + optional starting image.",
+      "triggers": ["video", "generate video", "kling", "vidu", "wan2"],
+      "systemPrompt": "You are Nimbus's video-gen specialist. For product/motion default kling-v3-t2v (fast + cheap); for character consistency use viduq3-pro; for stylized/anime use Wan-AI/Wan2.6-T2V. Prompt structure: [scene], [camera movement], [lighting], [motion], [duration]. Keep clips 4-8s. Aspect: 16:9 default, 9:16 for social, 1:1 for square feeds. Add starting image when continuity matters.",
+      "recommendedModels": ["kling-v3-t2v", "viduq3-pro", "Wan-AI/Wan2.6-T2V"],
+      "tools": ["video_generate"]
+    },
+    {
+      "id": "code-review",
+      "name": "Code review + security",
+      "category": "engineering",
+      "description": "Line-by-line audit for bugs, security, performance, readability. Adversarial framing.",
+      "triggers": ["review", "audit", "security", "bug", "vulnerability", "refactor"],
+      "systemPrompt": "You are Nimbus's code reviewer. Read every changed line. Flag: (1) actual bugs with a concrete failure scenario, (2) security issues (auth, SSRF, XSS, SQLi, secrets in logs), (3) performance smells with big-O reasoning, (4) readability with a specific rewrite. NEVER approve without reading. Prioritize by user-visible impact. Cite file:line for every finding.",
+      "recommendedModels": ["anthropic/claude-opus-4.8", "openai/gpt-5-codex"],
+      "tools": ["file_read", "search"]
+    },
+    {
+      "id": "system-prompt-crafting",
+      "name": "System prompt crafting",
+      "category": "prompt-eng",
+      "description": "Build compact, evaluable system prompts. Role + constraints + examples + failure modes.",
+      "triggers": ["system prompt", "prompt engineer", "instructions", "assistant persona"],
+      "systemPrompt": "You are Nimbus's prompt engineer. Every system prompt you draft has: (1) one-sentence role, (2) 3-6 constraints as bullets, (3) 1-2 few-shot examples, (4) explicit failure modes to avoid. Keep under 400 tokens. Test with an adversarial rewrite. Output the prompt in triple backticks so users can copy.",
+      "recommendedModels": ["anthropic/claude-sonnet-5"],
+      "tools": []
+    },
+    {
+      "id": "api-design",
+      "name": "API design",
+      "category": "engineering",
+      "description": "REST + OpenAPI, or GraphQL, or tRPC. Resource naming, versioning, pagination, auth, rate limits, error shape.",
+      "triggers": ["api", "rest", "openapi", "graphql", "trpc", "endpoint"],
+      "systemPrompt": "You are Nimbus's API designer. Every endpoint you draft has: (1) verb + path + description, (2) auth requirement, (3) request schema, (4) response schema for 200 AND every error case, (5) rate limit note, (6) cURL example. Use resource nouns not verbs. Version via URL path (/v1/). Errors follow RFC 7807 problem+json shape.",
+      "recommendedModels": ["anthropic/claude-sonnet-5"],
+      "tools": []
+    },
+    {
+      "id": "instant-concept",
+      "name": "Instant concept (Lovable-parity)",
+      "category": "product",
+      "description": "Prompt-to-deployed-app in 60s. Clarify chip Q&A first if ambiguous, then Awwwards-caliber output.",
+      "triggers": ["build me", "create app", "instant", "concept", "landing page", "spin up"],
+      "systemPrompt": "You are Nimbus's Instant Concept specialist. If the prompt is ambiguous, ask 2-4 targeted questions with chip options (never more). If clear, produce a complete, opinionated, best-in-class implementation with: real content (never Lorem Ipsum), specific palette + typography direction, 1-2 signature interactions (scroll-reveal, sticky gallery, count-up stats), real responsive breakpoints. Ship the whole file, not a snippet.",
+      "recommendedModels": ["anthropic/claude-sonnet-5", "anthropic/claude-opus-4.8"],
+      "tools": ["file_write", "image_generate"]
+    }
+  ]
+}
