@@ -1,0 +1,22 @@
+# Nimbus overlay on top of upstream LibreChat Dockerfile.
+# Layers our librechat.yaml into the image so the container starts with the
+# Nimbus custom endpoint pre-configured.
+FROM node:24.16.0-alpine AS base
+
+# Inherit everything the upstream Dockerfile does; simplest is to just import
+# the whole build result. We use a build-arg to pick the upstream image tag.
+ARG UPSTREAM_TAG=latest
+
+# For our Azure Container App we build from source (like the base Dockerfile
+# does) and then bake in librechat.yaml. Reuse the multi-stage base.
+
+FROM ghcr.io/danny-avila/librechat-dev:${UPSTREAM_TAG} AS librechat-nimbus
+
+# Bake in Nimbus config
+COPY librechat.yaml /app/librechat.yaml
+
+# Ensure env-var placeholder resolution: NIMBUS_API_KEY must be set at runtime
+# via ACA env-vars (see: az containerapp update --set-env-vars).
+ENV CONFIG_PATH=/app/librechat.yaml
+
+# Everything else (port 3080, healthcheck, entrypoint) inherited from upstream.
