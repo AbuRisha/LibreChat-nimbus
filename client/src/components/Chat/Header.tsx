@@ -53,6 +53,14 @@ function Header() {
                 !isSmallScreen ? 'transition-all duration-200 ease-in-out' : '',
               )}
             >
+              {!isSmallScreen && (
+                <nav className="hidden md:flex items-center gap-3 pr-3 border-r border-white/10 mr-2 text-xs text-white/60">
+                  <a href="https://nimbusapi.net" className="hover:text-white transition">Home</a>
+                  <a href="https://chat.nimbusapi.net" className="text-white font-medium">Chat</a>
+                  <a href="https://builder.nimbusapi.net" className="hover:text-white transition">Builder</a>
+                  <a href="https://nimbusapi.net/dashboard" className="hover:text-white transition">Dashboard</a>
+                </nav>
+              )}
               <ModelSelector startupConfig={startupConfig} />
               {interfaceConfig.presets === true && interfaceConfig.modelSelect && <PresetsMenu />}
               {hasAccessToBookmarks === true && <BookmarkMenu />}
