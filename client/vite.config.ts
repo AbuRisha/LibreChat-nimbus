@@ -137,11 +137,12 @@ export default defineConfig(({ command }) => ({
       },
       includeAssets: [],
       manifest: {
-        name: 'LibreChat',
-        short_name: 'LibreChat',
+        name: 'Nimbus Chat',
+        short_name: 'Nimbus',
+        description: 'Unified chat over every SpiderSense frontier model.',
         display: 'standalone',
-        background_color: '#000000',
-        theme_color: '#009688',
+        background_color: '#05070E',
+        theme_color: '#8B5CF6',
         icons: [
           {
             src: 'assets/favicon-32x32.png',
