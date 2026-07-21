@@ -1,0 +1,89 @@
+/* Nimbus brand theme overrides — loaded AFTER upstream style.css so :root
+ * variables + specific element colors match the nimbusapi.net palette
+ * (dark ink base, violet accent, cyan highlight, cloud text). */
+
+:root {
+  /* Nimbus base palette */
+  --nimbus-ink: #05070E;
+  --nimbus-ink-2: #0B1220;
+  --nimbus-ink-3: #131a2b;
+  --nimbus-violet: #8B5CF6;
+  --nimbus-violet-2: #A78BFA;
+  --nimbus-cyan: #22D3EE;
+  --nimbus-cloud: #E5E9F5;
+  --nimbus-cloud-dim: rgba(229, 233, 245, 0.6);
+
+  /* Override upstream chrome tokens LibreChat reads for the shell.
+   * We tint but don't invert — LibreChat's light theme still works if a
+   * user disables dark mode. */
+  --presentation: var(--nimbus-ink);
+  --surface-primary: var(--nimbus-ink);
+  --surface-primary-alt: var(--nimbus-ink-2);
+  --surface-secondary: var(--nimbus-ink-2);
+  --surface-tertiary: var(--nimbus-ink-3);
+  --surface-active: var(--nimbus-ink-3);
+  --surface-hover: rgba(139, 92, 246, 0.08);
+  --surface-active-alt: rgba(139, 92, 246, 0.14);
+
+  --border-light: rgba(255, 255, 255, 0.06);
+  --border-medium: rgba(255, 255, 255, 0.10);
+  --border-heavy: rgba(255, 255, 255, 0.14);
+
+  --text-primary: var(--nimbus-cloud);
+  --text-secondary: var(--nimbus-cloud-dim);
+  --text-tertiary: rgba(229, 233, 245, 0.45);
+
+  --brand-purple: var(--nimbus-violet);
+  --ring-primary: var(--nimbus-violet);
+
+  --header-primary: var(--nimbus-ink);
+  --header-hover: rgba(139, 92, 246, 0.12);
+}
+
+/* Scrollbars, selection, and focus ring get Nimbus violet */
+::selection {
+  background: rgba(139, 92, 246, 0.35);
+  color: #fff;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--nimbus-violet);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Buttons that use the brand color should feel Nimbus, not LibreChat teal */
+.bg-primary,
+.bg-brand-purple,
+button[data-testid='send-button'] {
+  background-color: var(--nimbus-violet) !important;
+}
+
+button[data-testid='send-button']:hover {
+  background-color: var(--nimbus-violet-2) !important;
+}
+
+/* Send/action icons pick up cyan accent */
+.text-brand,
+.text-brand-purple {
+  color: var(--nimbus-cyan) !important;
+}
+
+/* Sidebar drawer contrast */
+[data-radix-scroll-area-viewport],
+.dark [data-radix-scroll-area-viewport] {
+  background: var(--nimbus-ink);
+}
+
+/* Login / signup page background — match main site's ink base */
+.min-h-screen {
+  background-image: radial-gradient(
+    circle at 30% 20%,
+    rgba(139, 92, 246, 0.08),
+    transparent 45%
+  ), radial-gradient(
+    circle at 80% 70%,
+    rgba(34, 211, 238, 0.06),
+    transparent 45%
+  );
+}
