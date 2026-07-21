@@ -1,0 +1,44 @@
+{
+  "name": "Nimbus Chat",
+  "short_name": "Nimbus",
+  "description": "Unified chat over every SpiderSense frontier model. Claude Sonnet 5, GPT-5.x, Gemini 2.5/3.x, DeepSeek V4 Pro, Kimi K3 and more.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#05070E",
+  "theme_color": "#8B5CF6",
+  "categories": ["productivity", "developer", "utilities"],
+  "icons": [
+    {
+      "src": "assets/apple-touch-icon-180x180.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "New Chat",
+      "url": "/",
+      "description": "Start a fresh Nimbus conversation"
+    },
+    {
+      "name": "Nimbus Builder",
+      "url": "https://builder.nimbusapi.net",
+      "description": "Prompt-to-app in your browser"
+    }
+  ]
+}
