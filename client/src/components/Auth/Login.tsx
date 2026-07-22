@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ErrorTypes, registerPage } from 'librechat-data-provider';
-import { OpenIDIcon, useToastContext } from '@librechat/client';
+import { useToastContext } from '@librechat/client';
 import { useOutletContext, useSearchParams, useLocation } from 'react-router-dom';
 import type { TLoginLayoutContext } from '~/common';
 import { getLoginError, persistRedirectToSession } from '~/utils';
@@ -87,7 +87,7 @@ function Login() {
               startupConfig.openidImageUrl ? (
                 <img src={startupConfig.openidImageUrl} alt="OpenID Logo" className="h-5 w-5" />
               ) : (
-                <OpenIDIcon />
+                <img src="/nimbus-favicon.svg" alt="" className="h-5 w-5" />
               )
             }
             label={startupConfig.openidLabel}

@@ -1,7 +1,6 @@
 import {
   GoogleIcon,
   FacebookIcon,
-  OpenIDIcon,
   GithubIcon,
   DiscordIcon,
   AppleIcon,
@@ -91,7 +90,7 @@ function SocialLoginRender({
           startupConfig.openidImageUrl ? (
             <img src={startupConfig.openidImageUrl} alt="OpenID Logo" className="h-5 w-5" />
           ) : (
-            <OpenIDIcon />
+            <img src="/nimbus-favicon.svg" alt="" className="h-5 w-5" />
           )
         }
         label={startupConfig.openidLabel}
