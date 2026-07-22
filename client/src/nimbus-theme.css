@@ -75,15 +75,88 @@ button[data-testid='send-button']:hover {
   background: var(--nimbus-ink);
 }
 
-/* Login / signup page background — match main site's ink base */
-.min-h-screen {
+/* Login / signup page — aggressive class-level override so it stops looking
+ * like default LibreChat (white card + emerald green button). Every route
+ * mounted at /login or /register uses these classes; force them Nimbus. */
+html, body {
+  background: var(--nimbus-ink) !important;
+  color: var(--nimbus-cloud) !important;
+}
+
+/* Login-page shell */
+.min-h-screen,
+.h-screen,
+main.min-h-full,
+[class*="bg-white"],
+[class*="bg-gray-50"],
+[class*="bg-gray-100"],
+[class*="bg-slate-50"] {
+  background: var(--nimbus-ink) !important;
   background-image: radial-gradient(
-    circle at 30% 20%,
-    rgba(139, 92, 246, 0.08),
-    transparent 45%
+    circle at 30% 20%, rgba(139, 92, 246, 0.14), transparent 45%
   ), radial-gradient(
-    circle at 80% 70%,
-    rgba(34, 211, 238, 0.06),
-    transparent 45%
-  );
+    circle at 80% 70%, rgba(34, 211, 238, 0.10), transparent 45%
+  ) !important;
+  color: var(--nimbus-cloud);
+}
+
+/* Login card container itself (typically an inner div) */
+.min-h-screen > div,
+form,
+.rounded-xl,
+.rounded-2xl,
+.rounded-lg,
+[class*="bg-token-surface-primary"] {
+  background: rgba(11, 18, 32, 0.85) !important;
+  border-color: rgba(139, 92, 246, 0.20) !important;
+  color: var(--nimbus-cloud);
+}
+
+/* Login form headings */
+h1, h2, h3, .text-3xl, .text-2xl {
+  color: var(--nimbus-cloud) !important;
+}
+
+/* Inputs */
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  background: rgba(5, 7, 14, 0.9) !important;
+  border-color: rgba(139, 92, 246, 0.30) !important;
+  color: var(--nimbus-cloud) !important;
+}
+input::placeholder { color: rgba(229, 233, 245, 0.4) !important; }
+
+/* KILL the default LibreChat emerald / green / teal button — force Nimbus violet */
+.bg-green-500, .bg-green-600, .bg-green-700,
+.bg-emerald-400, .bg-emerald-500, .bg-emerald-600, .bg-emerald-700,
+.bg-teal-500, .bg-teal-600,
+button[class*="bg-green"],
+button[class*="bg-emerald"],
+button[class*="bg-teal"] {
+  background-color: var(--nimbus-violet) !important;
+  background-image: linear-gradient(135deg, var(--nimbus-violet) 0%, #7C3AED 100%) !important;
+  color: #fff !important;
+  border: none !important;
+}
+
+.hover\:bg-green-600:hover,
+.hover\:bg-emerald-600:hover,
+.hover\:bg-teal-600:hover,
+button[class*="bg-green"]:hover,
+button[class*="bg-emerald"]:hover,
+button[class*="bg-teal"]:hover {
+  background-color: var(--nimbus-violet-2) !important;
+  background-image: linear-gradient(135deg, var(--nimbus-violet-2) 0%, var(--nimbus-violet) 100%) !important;
+}
+
+/* Sign-up / links */
+a, .text-emerald-500, .text-emerald-600, .text-green-600 {
+  color: var(--nimbus-cyan) !important;
+}
+a:hover { color: var(--nimbus-violet-2) !important; }
+
+/* Labels above input fields — LibreChat renders these as dark chips */
+label, .text-gray-600, .text-gray-700, .text-gray-800, .text-gray-900 {
+  color: var(--nimbus-cloud) !important;
 }
