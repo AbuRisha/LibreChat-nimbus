@@ -55,20 +55,6 @@ mcpServers:
     chatMenu: true
     description: Save/read/link arbitrary facts + entities the model wants to remember.
 
-  # Nimbus Chrome extension bridge — Chrome-in-MCP live in the user's own
-  # local Chrome (not a headless one). Users install the extension from
-  # https://nimbusapi.net/extensions; the bridge listens on 127.0.0.1:35123
-  # and forwards MCP calls (navigate, read_page, click, type, screenshot,
-  # eval) to whatever tab is open. Same UX as Claude's built-in chrome MCP.
-  nimbus-chrome:
-    command: node
-    args:
-      - /app/nimbus-chrome-mcp/bridge/index.js
-    timeout: 60000
-    initTimeout: 10000
-    chatMenu: true
-    description: Drive the user's local Chrome — navigate, click, type, screenshot, run JS.
-
   # Real browser control via Playwright — models can navigate URLs, click,
   # type, screenshot, extract page structure. Same primitives as Claude
   # Code's Chrome MCP. Bootstraps its own headless Chromium on first use.
@@ -99,6 +85,7 @@ memory:
     - tech_stack
     - project_context
   agent:
+    enabled: true
     provider: Nimbus
     model: anthropic/claude-haiku-4.5
     instructions: |
@@ -157,7 +144,7 @@ endpoints:
   custom:
     - name: 'Nimbus'
       apiKey: '${NIMBUS_API_KEY}'
-      baseURL: 'https://api.nimbusapi.net/v1'
+      baseURL: '${NIMBUS_API_BASE_URL}'
       models:
         default:
           - 'anthropic/claude-sonnet-5'
@@ -171,7 +158,6 @@ endpoints:
           - 'deepseek/deepseek-v4-pro'
           - 'moonshotai/kimi-k3'
           - 'moonshotai/kimi-k2.7-code'
-          - 'google/gemini-2.5-pro'
           - 'google/gemini-3.1-pro-preview'
           - 'google/gemini-3-flash-preview'
         fetch: true
