@@ -26,7 +26,7 @@ mcpServers:
       - -y
       - '@modelcontextprotocol/server-sequential-thinking'
     timeout: 60000
-    initTimeout: 20000
+    initTimeout: 90000
     chatMenu: true
     description: Break a problem into ordered thinking steps before answering.
 
@@ -50,8 +50,8 @@ mcpServers:
     args:
       - -y
       - '@modelcontextprotocol/server-memory'
-    timeout: 20000
-    initTimeout: 20000
+    timeout: 30000
+    initTimeout: 90000
     chatMenu: true
     description: Save/read/link arbitrary facts + entities the model wants to remember.
 
@@ -83,19 +83,6 @@ mcpServers:
     initTimeout: 60000
     chatMenu: true
     description: Browse the web headlessly — navigate, click, type, screenshot, extract.
-
-  # Everything demo server — echo, add, longRunningOperation, sampling,
-  # resources. Useful for teaching users what MCP tools look/feel like and
-  # for smoke-testing tool wiring end-to-end.
-  everything:
-    command: npx
-    args:
-      - -y
-      - '@modelcontextprotocol/server-everything'
-    timeout: 15000
-    initTimeout: 15000
-    chatMenu: false
-    description: MCP demo server — echo, add, sampling, resources. For QA + tutorials.
 
 # ChatGPT-style persistent memory (LibreChat native subsystem).
 # Model can auto-save user preferences and Nimbus injects them into system
