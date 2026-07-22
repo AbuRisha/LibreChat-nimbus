@@ -121,6 +121,10 @@ jest.mock('react-router-dom', () => ({
 
 test('renders login form', () => {
   const { getByLabelText, getByRole } = setup();
+  expect(getByRole('img', { name: 'Nimbus Chat Logo' })).toHaveAttribute(
+    'src',
+    '/nimbus-favicon.svg',
+  );
   expect(getByLabelText(/email/i)).toBeInTheDocument();
   expect(getByLabelText(/password/i)).toBeInTheDocument();
   expect(getByTestId(document.body, 'login-button')).toBeInTheDocument();
@@ -151,6 +155,23 @@ test('renders login form', () => {
     'href',
     'mock-server/oauth/saml',
   );
+});
+
+test('uses the Nimbus mark for OpenID when no provider image is configured', () => {
+  const { getByRole } = setup({
+    useGetStartupConfigReturnValue: {
+      ...mockStartupConfig,
+      data: {
+        ...mockStartupConfig.data,
+        socialLogins: ['openid'],
+        openidLabel: 'Continue with Nimbus',
+        openidImageUrl: '',
+      },
+    },
+  });
+
+  const openidLink = getByRole('link', { name: 'Continue with Nimbus' });
+  expect(openidLink.querySelector('img')).toHaveAttribute('src', '/nimbus-favicon.svg');
 });
 
 test('calls loginUser.mutate on login', async () => {
