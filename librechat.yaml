@@ -1,6 +1,25 @@
 version: 1.3.13
 cache: true
 
+endpoints:
+  custom:
+    - name: 'Nimbus'
+      apiKey: '${NIMBUS_API_KEY}'
+      baseURL: '${NIMBUS_API_BASE_URL}'
+      models:
+        default:
+          - 'anthropic/claude-sonnet-5'
+          - 'anthropic/claude-opus-4.8'
+          - 'anthropic/claude-haiku-4.5'
+          - 'anthropic/claude-fable-5'
+          - 'moonshotai/kimi-k3'
+          - 'deepseek/deepseek-v4-pro'
+          - 'openai/gpt-5.6-sol'
+        fetch: true
+      titleConvo: true
+      titleModel: 'anthropic/claude-haiku-4.5'
+      modelDisplayLabel: 'Nimbus'
+
 modelSpecs:
   enforce: false
   prioritize: true
