@@ -83,6 +83,14 @@ export default defineConfig(({ command }) => ({
           fileName: 'sw-heal.js',
           source: fs.readFileSync(path.resolve(__dirname, 'sw/heal.js'), 'utf8'),
         });
+        // Production builds disable Vite's publicDir copy below, so branded
+        // assets referenced by index.html and the generated PWA manifest must
+        // be emitted explicitly. Without this, /nimbus-favicon.svg is a 404.
+        this.emitFile({
+          type: 'asset',
+          fileName: 'nimbus-favicon.svg',
+          source: fs.readFileSync(path.resolve(__dirname, 'public/nimbus-favicon.svg'), 'utf8'),
+        });
       },
     },
     VitePWA({
@@ -94,11 +102,7 @@ export default defineConfig(({ command }) => ({
       useCredentials: true,
       includeManifestIcons: false,
       workbox: {
-        globPatterns: [
-          '**/*.{js,css,html}',
-          'nimbus-favicon.svg',
-          'manifest.webmanifest',
-        ],
+        globPatterns: ['**/*.{js,css,html}', 'nimbus-favicon.svg', 'manifest.webmanifest'],
         globIgnores: [
           'images/**/*',
           '**/*.map',
