@@ -42,6 +42,47 @@ mcpServers:
     chatMenu: true
     description: Ask for the current time in any timezone or compute time deltas.
 
+  # Persistent key-value memory graph — models can save + recall arbitrary
+  # facts across turns / sessions. Complements the native personalization
+  # memory (which is opinionated + short) with unbounded factual storage.
+  persistent-memory:
+    command: npx
+    args:
+      - -y
+      - '@modelcontextprotocol/server-memory'
+    timeout: 20000
+    initTimeout: 20000
+    chatMenu: true
+    description: Save/read/link arbitrary facts + entities the model wants to remember.
+
+  # Real browser control via Playwright — models can navigate URLs, click,
+  # type, screenshot, extract page structure. Same primitives as Claude
+  # Code's Chrome MCP. Bootstraps its own headless Chromium on first use.
+  browser:
+    command: npx
+    args:
+      - -y
+      - '@playwright/mcp@latest'
+      - --headless
+      - --isolated
+    timeout: 60000
+    initTimeout: 60000
+    chatMenu: true
+    description: Browse the web headlessly — navigate, click, type, screenshot, extract.
+
+  # Everything demo server — echo, add, longRunningOperation, sampling,
+  # resources. Useful for teaching users what MCP tools look/feel like and
+  # for smoke-testing tool wiring end-to-end.
+  everything:
+    command: npx
+    args:
+      - -y
+      - '@modelcontextprotocol/server-everything'
+    timeout: 15000
+    initTimeout: 15000
+    chatMenu: false
+    description: MCP demo server — echo, add, sampling, resources. For QA + tutorials.
+
 # ChatGPT-style persistent memory (LibreChat native subsystem).
 # Model can auto-save user preferences and Nimbus injects them into system
 # context on every turn. Users manage memories in Settings > Personalization.
