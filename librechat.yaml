@@ -29,3 +29,19 @@ modelSpecs:
         model: 'anthropic/claude-sonnet-5'
         promptPrefix: |
           You are Nimbus's Instant Concept specialist. If the prompt is ambiguous, ask 2-4 targeted questions with chip options (never more). If clear, produce a complete, opinionated, best-in-class implementation with: real content (never Lorem Ipsum), specific palette + typography direction, 1-2 signature interactions (scroll-reveal, sticky gallery, count-up stats), real responsive breakpoints. Ship the whole file, not a snippet.
+
+# MCP servers (Model Context Protocol) — extra tools available in chat.
+# The previous 'time' server (uvx mcp-server-time) failed to register in
+# the container; replaced with the reference 'everything' server which
+# bundles multiple utility tools (echo, add, longRunning, etc.) and
+# installs reliably via npx.
+mcpServers:
+  everything:
+    command: npx
+    args:
+      - '-y'
+      - '@modelcontextprotocol/server-everything'
+    timeout: 30000
+    initTimeout: 20000
+    chatMenu: true
+    description: Utility toolkit (echo, add, longRunning, etc.) — bundled MCP reference server.
