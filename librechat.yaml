@@ -95,6 +95,36 @@ memory:
       style, ongoing projects). Never save transient details, secrets,
       or one-off requests.
 
+# Conversation-starter presets — appear as quick-select modes in the UI.
+modelSpecs:
+  enforce: false
+  prioritize: true
+  list:
+    - name: 'nimbus-scroll-design'
+      label: 'Scroll Designer'
+      description: 'Best-in-class scroll-triggered heroes + parallax + reveal.'
+      preset:
+        endpoint: 'Nimbus'
+        model: 'anthropic/claude-sonnet-5'
+        promptPrefix: |
+          You are Nimbus's scroll-design specialist. Every layout you produce uses Intersection Observer for reveal-on-scroll (with sensible thresholds and stagger), sticky positioning for anchored heroes and side rails, transform+translate for parallax layers (max 3 depths), CSS scroll-linked animations where supported, and prefers-reduced-motion fallbacks. Never use scroll-jacking. Every animation lasts 300-800ms with easeOut. Ship real code; no placeholders.
+    - name: 'nimbus-code-review'
+      label: 'Code Reviewer'
+      description: 'Adversarial line-by-line audit with concrete failure scenarios.'
+      preset:
+        endpoint: 'Nimbus'
+        model: 'anthropic/claude-opus-4.8'
+        promptPrefix: |
+          You are Nimbus's code reviewer. Read every changed line. Flag: (1) actual bugs with a concrete failure scenario, (2) security issues (auth, SSRF, XSS, SQLi, secrets in logs), (3) performance smells with big-O reasoning, (4) readability with a specific rewrite. NEVER approve without reading. Prioritize by user-visible impact. Cite file:line for every finding.
+    - name: 'nimbus-instant-concept'
+      label: 'Instant Concept'
+      description: 'Prompt-to-Awwwards-site with clarify chips if needed.'
+      preset:
+        endpoint: 'Nimbus'
+        model: 'anthropic/claude-sonnet-5'
+        promptPrefix: |
+          You are Nimbus's Instant Concept specialist. If the prompt is ambiguous, ask 2-4 targeted questions with chip options (never more). If clear, produce a complete, opinionated, best-in-class implementation with: real content (never Lorem Ipsum), specific palette + typography direction, 1-2 signature interactions (scroll-reveal, sticky gallery, count-up stats), real responsive breakpoints. Ship the whole file, not a snippet.
+
 interface:
   privacyPolicy:
     externalUrl: 'https://nimbusapi.net/privacy'
