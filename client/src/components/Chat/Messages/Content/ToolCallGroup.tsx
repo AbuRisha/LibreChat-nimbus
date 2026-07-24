@@ -1,6 +1,6 @@
 import { useState, useRef, useMemo, useEffect, useCallback } from 'react';
 import { useRecoilValue } from 'recoil';
-import { ChevronDown, MessageCircleQuestion, Users } from 'lucide-react';
+import { ChevronDown, MessageCircleQuestion, Users, Zap } from 'lucide-react';
 import { Tools, Constants, ContentTypes, ToolCallTypes } from 'librechat-data-provider';
 import type {
   TAttachment,
@@ -37,10 +37,6 @@ function getToolMeta(part: TMessageContentParts): ToolMeta | null {
     'args' in toolCall && (!toolCall.type || toolCall.type === ToolCallTypes.TOOL_CALL);
   if (isStandard) {
     const tc = toolCall as Agents.ToolCall & { progress?: number };
-    /** Subagents can finish with `progress === 1` and no final output
-     *  text (the parent saw "" / undefined back). Fall back to progress
-     *  so the group header flips from "Running N agents" to "Ran N
-     *  agents" on completion even when the child returned no text. */
     const completed = !!tc.output || tc.progress === 1;
     const name = tc.name ?? '';
     const iconName = isBashProgrammaticToolCall(name, tc.args) ? Tools.bash_tool : name;
@@ -93,6 +89,13 @@ export type ToolCallGroupExpansionState = {
   userOverride: boolean;
 };
 
+/** Choose grid-cols class based on tool count (capped at 3 columns). */
+function parallelGridCols(count: number): string {
+  if (count === 2) return 'sm:grid-cols-2';
+  if (count === 3) return 'sm:grid-cols-3';
+  return 'sm:grid-cols-2';
+}
+
 export default function ToolCallGroup({
   parts,
   isSubmitting,
@@ -117,36 +120,22 @@ export default function ToolCallGroup({
   const toolNames = useMemo(() => toolMetadata.map((m) => m?.name ?? ''), [toolMetadata]);
   const iconToolNames = useMemo(() => toolMetadata.map((m) => m?.iconName ?? ''), [toolMetadata]);
 
-  /** Subagent tool calls get their own label verb ("Running/Ran N agents")
-   *  since "Used N tools" reads oddly when the "tools" are actually child
-   *  agents. `subagentCount === count` ⇒ the group is 100% subagents. */
   const subagentCount = useMemo(
     () => toolNames.filter((n) => n === Constants.SUBAGENT).length,
     [toolNames],
   );
   const allSubagents = subagentCount > 0 && subagentCount === count;
-  /** Past-tense label once the parent stream is no longer live OR every
-   *  child has a terminal signal (output / progress === 1). Without the
-   *  `!isSubmitting` branch, a cancelled or errored subagent that never
-   *  reached `progress === 1` would leave the header stuck on "Running
-   *  N agents" forever — each individual card already renders its own
-   *  terminal state ("Cancelled agent", "Agent errored"), so the group
-   *  summary needs to match that tense. */
   const subagentsDone = allSubagents && (allCompleted || !isSubmitting);
 
-  /** `ask_user_question` calls form their own category, mirroring subagents:
-   *  a homogeneous group reads "Asking/Asked N questions" (never "Used N
-   *  tools — ask_user_question") with a question glyph. A group only exists
-   *  at count >= 2, so the plural is always grammatical. */
   const askQuestionCount = useMemo(
     () => toolNames.filter((n) => n === ASK_USER_QUESTION).length,
     [toolNames],
   );
   const allAskQuestions = askQuestionCount > 0 && askQuestionCount === count;
-  /** Past tense once the turn is settled — matches the Asking/Asked record
-   *  card. While a multi-question turn streams, the still-open question's
-   *  tool_call part has no output yet, so keep the present tense. */
   const askQuestionsDone = allAskQuestions && (allCompleted || !isSubmitting);
+
+  /** True when multiple regular tools ran in the same turn (parallel fan-out) */
+  const isParallelGroup = count >= 2 && !allSubagents && !allAskQuestions;
 
   const toolNameSummary = useMemo(() => {
     const seen = new Set<string>();
@@ -232,8 +221,6 @@ export default function ToolCallGroup({
     [isExpanded, notifyLayoutChange],
   );
 
-  /** Category-aware header verb: subagents and questions read as their own
-   *  category (with tense), everything else is the generic "Used N tools". */
   const resolveGroupLabel = (): string => {
     if (allSubagents) {
       return subagentsDone
@@ -248,7 +235,6 @@ export default function ToolCallGroup({
     return localize('com_ui_used_n_tools', { 0: String(count) });
   };
   const groupLabel = resolveGroupLabel();
-  /** Single category glyph for homogeneous groups (else StackedToolIcons). */
   const CategoryIcon = allSubagents ? Users : MessageCircleQuestion;
 
   const hasActiveToolCall = useMemo(
@@ -273,11 +259,6 @@ export default function ToolCallGroup({
         aria-label={groupLabel}
       >
         {allSubagents || allAskQuestions ? (
-          /** Homogeneous category groups get a single category glyph instead
-           *  of StackedToolIcons' generic wrenches: a Users glyph for
-           *  subagents, a question glyph for ask_user_question — matching
-           *  their individual card headers and reading as the category
-           *  rather than "tools". */
           <div
             className={cn(
               'flex h-5 w-5 shrink-0 items-center justify-center text-text-secondary',
@@ -296,11 +277,18 @@ export default function ToolCallGroup({
           />
         )}
         <span className="tool-status-text font-medium">{groupLabel}</span>
-        {/** Hide the tool-name summary for pure-category groups (subagents /
-         *   questions) — every entry deduplicates to the same token, which
-         *   adds noise without info. Mixed groups keep the summary. */}
         {toolNameSummary && !allSubagents && !allAskQuestions && (
           <span className="text-xs font-normal text-text-secondary">— {toolNameSummary}</span>
+        )}
+        {/* ⚡ parallel badge — shown for multi-tool groups (not subagent/ask-question) */}
+        {isParallelGroup && (
+          <span
+            className="inline-flex shrink-0 items-center gap-0.5 rounded border border-violet-500/30 bg-violet-500/10 px-1.5 py-0.5 font-mono text-[10px] text-violet-400"
+            title="Tools ran in parallel in this turn"
+          >
+            <Zap size={8} aria-hidden />
+            parallel
+          </span>
         )}
         <ChevronDown
           className={cn(
@@ -313,11 +301,27 @@ export default function ToolCallGroup({
       <div style={expandStyle} onTransitionEnd={handleTransitionEnd} aria-hidden={!isExpanded}>
         {shouldRenderBody && (
           <div className="overflow-hidden" ref={expandRef}>
-            <div className="py-0.5 pl-4">
-              {parts.map(({ part, idx }) =>
-                renderPart(part, idx, isLast && idx === lastContentIdx, handleToolExpand),
-              )}
-            </div>
+            {/* Parallel fan-out: responsive grid for multiple regular tool calls */}
+            {isParallelGroup ? (
+              <div
+                className={cn(
+                  'grid grid-cols-1 gap-2 py-1',
+                  parallelGridCols(count),
+                )}
+              >
+                {parts.map(({ part, idx }) => (
+                  <div key={`parallel-cell-${idx}`} className="min-w-0">
+                    {renderPart(part, idx, isLast && idx === lastContentIdx, handleToolExpand)}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="py-0.5 pl-4">
+                {parts.map(({ part, idx }) =>
+                  renderPart(part, idx, isLast && idx === lastContentIdx, handleToolExpand),
+                )}
+              </div>
+            )}
           </div>
         )}
       </div>
