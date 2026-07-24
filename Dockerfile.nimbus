@@ -49,10 +49,14 @@ RUN \
 
 COPY --chown=node:node . .
 
-RUN \
-    NODE_OPTIONS="--max-old-space-size=${NODE_MAX_OLD_SPACE_SIZE}" npm run frontend; \
-    npm prune --production; \
-    npm cache clean --force
+# CRITICAL: chain with && so a frontend build failure fails the whole RUN.
+# The previous `;` variant silently succeeded on frontend errors, letting
+# ACR ship a broken image where /app/client/dist/index.html was missing.
+RUN set -eu \
+ && NODE_OPTIONS="--max-old-space-size=${NODE_MAX_OLD_SPACE_SIZE}" npm run frontend \
+ && test -f /app/client/dist/index.html \
+ && npm prune --production \
+ && npm cache clean --force
 
 ARG BUILD_COMMIT=
 ARG BUILD_BRANCH=
