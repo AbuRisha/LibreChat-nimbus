@@ -1,5 +1,4 @@
-# LibreChat Nimbus configuration
-# Exposes the full SpiderSense catalog through Nimbus's OpenAI-compatible surface.
+# Nimbus Chat configuration.
 version: 1.3.13
 cache: true
 
@@ -183,9 +182,8 @@ interface:
     modalAcceptance: true
     modalTitle: 'Nimbus Chat Terms'
     modalContent: |
-      By using Nimbus Chat you agree to route requests through
-      api.nimbusapi.net (SpiderSense reseller catalog) and to
-      Nimbus's usage-based billing model.
+      By using Nimbus Chat you agree to Nimbus's Terms of Service and
+      usage-based billing.
   endpointsMenu: true
   modelSelect: true
   parameters: true
@@ -196,7 +194,7 @@ interface:
   multiConvo: true
   agents: true
 
-# Speech services — wire Nimbus's audio catalog if desired
+# Speech services — Nimbus audio catalog.
 speech:
   tts:
     openai:
