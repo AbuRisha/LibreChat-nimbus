@@ -13,9 +13,7 @@
   --nimbus-cloud: #E5E9F5;
   --nimbus-cloud-dim: rgba(229, 233, 245, 0.6);
 
-  /* Override upstream chrome tokens LibreChat reads for the shell.
-   * We tint but don't invert — LibreChat's light theme still works if a
-   * user disables dark mode. */
+  /* Override upstream chrome tokens LibreChat reads for the shell. */
   --presentation: var(--nimbus-ink);
   --surface-primary: var(--nimbus-ink);
   --surface-primary-alt: var(--nimbus-ink-2);
@@ -40,46 +38,164 @@
   --header-hover: rgba(139, 92, 246, 0.12);
 }
 
-/* Scrollbars, selection, and focus ring get Nimbus violet */
-::selection {
-  background: rgba(139, 92, 246, 0.35);
-  color: #fff;
+::selection { background: rgba(139, 92, 246, 0.35); color: #fff; }
+*:focus-visible { outline: 2px solid var(--nimbus-violet); outline-offset: 2px; border-radius: 6px; }
+
+/* ══════════════════════════════════════════════════════════════════════
+ * P0 — COMPOSER INPUT CONTRAST
+ * User couldn't see what they were typing (white bg + white text).
+ * Force every text-input node to Nimbus dark surface + cloud text
+ * regardless of upstream class permutation.
+ * ══════════════════════════════════════════════════════════════════════ */
+input,
+textarea,
+select,
+[contenteditable="true"],
+[contenteditable=""],
+[role="textbox"],
+[data-lexical-editor="true"],
+[data-slate-editor="true"],
+.editor-input,
+.editor-shell,
+[class*="editor"] textarea,
+[class*="composer"] input,
+[class*="composer"] textarea,
+[class*="composer"] [contenteditable],
+[class*="Composer"] [contenteditable],
+[class*="ChatInput"] textarea,
+[class*="ChatInput"] [contenteditable],
+[class*="PromptInput"] [contenteditable],
+form textarea {
+  background: rgba(11, 18, 32, 0.55) !important;
+  color: var(--nimbus-cloud) !important;
+  caret-color: var(--nimbus-cyan) !important;
+  border-color: rgba(139, 92, 246, 0.20) !important;
 }
 
-*:focus-visible {
-  outline: 2px solid var(--nimbus-violet);
-  outline-offset: 2px;
-  border-radius: 6px;
+/* Composer container itself — the whole "chat input box" wrapper */
+form[class*="composer"],
+form[class*="Composer"],
+form[class*="chat-input"],
+form[class*="ChatInput"],
+[data-testid*="composer"],
+[data-testid*="chat-input"] {
+  background: rgba(11, 18, 32, 0.85) !important;
+  border: 1px solid rgba(139, 92, 246, 0.24) !important;
+  border-radius: 1rem !important;
+  box-shadow:
+    0 8px 32px -12px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(255, 255, 255, 0.02),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
 }
 
-/* Buttons that use the brand color should feel Nimbus, not LibreChat teal */
+/* Placeholder — visible but not dominant */
+input::placeholder,
+textarea::placeholder,
+[contenteditable]::before,
+.editor-placeholder {
+  color: rgba(229, 233, 245, 0.42) !important;
+  opacity: 1 !important;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+ * P0 — MESSAGE READABILITY
+ * Assistant responses were rendering at ~30% opacity — unreadable.
+ * Force full opacity + cloud text on every message content node.
+ * ══════════════════════════════════════════════════════════════════════ */
+[class*="message"] p,
+[class*="message"] li,
+[class*="message"] span:not([class*="badge"]):not([class*="chip"]),
+[class*="message"] pre,
+[class*="message"] code,
+[class*="Message"] p,
+[class*="Message"] li,
+.prose,
+.prose *,
+[class*="markdown"] p,
+[class*="markdown"] li,
+[class*="markdown"] span,
+.markdown-content,
+.markdown-content *,
+[data-message-author-role] p,
+[data-message-author-role] li {
+  color: var(--nimbus-cloud) !important;
+  opacity: 1 !important;
+}
+
+/* Headings inside messages */
+[class*="message"] h1,
+[class*="message"] h2,
+[class*="message"] h3,
+[class*="message"] h4,
+[class*="Message"] h1,
+[class*="Message"] h2,
+[class*="Message"] h3 {
+  color: var(--nimbus-cloud) !important;
+  opacity: 1 !important;
+  font-weight: 600 !important;
+}
+
+/* Links inside messages — cyan */
+[class*="message"] a,
+[class*="Message"] a {
+  color: var(--nimbus-cyan) !important;
+  text-decoration: underline !important;
+  text-decoration-color: rgba(34, 211, 238, 0.35) !important;
+  text-underline-offset: 3px !important;
+}
+
+/* Code inside messages */
+[class*="message"] code:not(pre code),
+[class*="Message"] code:not(pre code) {
+  background: rgba(139, 92, 246, 0.10) !important;
+  border: 1px solid rgba(139, 92, 246, 0.20) !important;
+  color: #C7D2FE !important;
+  padding: 0.15em 0.4em !important;
+  border-radius: 0.3rem !important;
+  font-size: 0.9em !important;
+}
+
+[class*="message"] pre,
+[class*="Message"] pre {
+  background: rgba(5, 7, 14, 0.85) !important;
+  border: 1px solid rgba(139, 92, 246, 0.20) !important;
+  border-radius: 0.5rem !important;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+ * BUTTONS — Nimbus violet + shimmer on hover
+ * ══════════════════════════════════════════════════════════════════════ */
 .bg-primary,
 .bg-brand-purple,
 button[data-testid='send-button'] {
   background-color: var(--nimbus-violet) !important;
+  background-image: linear-gradient(135deg, var(--nimbus-violet), #7C3AED) !important;
+  transition: transform 200ms ease, box-shadow 200ms ease, background-image 300ms ease !important;
+  box-shadow: 0 8px 20px -6px rgba(139, 92, 246, 0.55) !important;
 }
 
 button[data-testid='send-button']:hover {
-  background-color: var(--nimbus-violet-2) !important;
+  background-image: linear-gradient(135deg, var(--nimbus-violet-2), var(--nimbus-cyan)) !important;
+  box-shadow: 0 12px 28px -6px rgba(139, 92, 246, 0.80) !important;
+  transform: translateY(-1px) !important;
 }
 
-/* Send/action icons pick up cyan accent */
-.text-brand,
-.text-brand-purple {
-  color: var(--nimbus-cyan) !important;
+button[data-testid='send-button']:active {
+  transform: translateY(0) !important;
+  box-shadow: 0 4px 12px -4px rgba(139, 92, 246, 0.65) !important;
 }
+
+.text-brand,
+.text-brand-purple { color: var(--nimbus-cyan) !important; }
 
 /* Sidebar drawer contrast */
 [data-radix-scroll-area-viewport],
-.dark [data-radix-scroll-area-viewport] {
-  background: var(--nimbus-ink);
-}
+.dark [data-radix-scroll-area-viewport] { background: var(--nimbus-ink); }
 
 /* ══════════════════════════════════════════════════════════════════════
- * TOOLTIP CONTRAST — belt-and-suspenders override for @librechat/client
- * Tooltip. packages/client is a workspace pkg, not always rebuilt in the
- * client's `npm run frontend`, so patching packages/client/Tooltip.css
- * alone isn't reliable. Force it here with high specificity.
+ * TOOLTIP CONTRAST
  * ══════════════════════════════════════════════════════════════════════ */
 [role="tooltip"],
 .tooltip,
@@ -91,9 +207,7 @@ button[data-testid='send-button']:hover {
   background: rgba(11, 18, 32, 0.96) !important;
   color: var(--nimbus-cloud) !important;
   border: 1px solid rgba(139, 92, 246, 0.32) !important;
-  box-shadow:
-    0 8px 24px rgba(0, 0, 0, 0.6),
-    0 0 0 1px rgba(255, 255, 255, 0.04) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.04) !important;
   padding: 0.375rem 0.625rem !important;
   border-radius: 0.5rem !important;
   font-weight: 500 !important;
@@ -106,31 +220,47 @@ button[data-testid='send-button']:hover {
 }
 
 /* ══════════════════════════════════════════════════════════════════════
- * CHAT AURORA BACKGROUND — no more flat black. Fixed radial-gradient
- * layer of violet + cyan orbs, subtle grid overlay for depth. Sits
- * behind every panel; content surfaces stay solid ink so text is
- * always readable.
+ * CHAT ATMOSPHERE — SS-generated hero art layered under the aurora
+ * Uses https://nimbusapi.net/brand/chat-hero-cloudscape.png (SS-routed
+ * gpt-image-2 generation from the rebrand workflow). CSP already allows
+ * nimbusapi.net images.
  * ══════════════════════════════════════════════════════════════════════ */
 body {
-  background: var(--nimbus-ink) !important;
+  background-color: var(--nimbus-ink) !important;
   background-image:
     radial-gradient(ellipse 55% 40% at 18% 12%, rgba(139, 92, 246, 0.22), transparent 62%),
     radial-gradient(ellipse 45% 40% at 82% 88%, rgba(34, 211, 238, 0.18), transparent 62%),
     radial-gradient(ellipse 100% 50% at 50% 100%, rgba(139, 92, 246, 0.12), transparent 70%),
     linear-gradient(rgba(58, 107, 184, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(58, 107, 184, 0.04) 1px, transparent 1px) !important;
-  background-size: auto, auto, auto, 80px 80px, 80px 80px !important;
+    linear-gradient(90deg, rgba(58, 107, 184, 0.04) 1px, transparent 1px),
+    url("https://nimbusapi.net/brand/chat-hero-cloudscape.png") !important;
+  background-size: auto, auto, auto, 80px 80px, 80px 80px, cover !important;
+  background-position: center, center, center, 0 0, 0 0, center center !important;
+  background-repeat: no-repeat, no-repeat, no-repeat, repeat, repeat, no-repeat !important;
+  background-blend-mode: normal, normal, normal, normal, normal, soft-light !important;
   background-attachment: fixed !important;
 }
 
-/* Make sure panels that don't specify a bg remain readable on the aurora */
-main, .chat-panel {
-  background: transparent !important;
+main, .chat-panel { background: transparent !important; }
+
+/* Message reveal-on-mount — assistant messages fade+lift 240ms */
+[data-message-author-role="assistant"],
+[data-message-author-role="agent"] {
+  animation: nimbus-msg-in 240ms cubic-bezier(0.34, 1.20, 0.64, 1) both;
+}
+@keyframes nimbus-msg-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Message hover — subtle violet halo */
+[class*="message"]:hover,
+[class*="Message"]:hover {
+  transition: box-shadow 200ms ease, transform 200ms ease;
 }
 
 /* ══════════════════════════════════════════════════════════════════════
- * MODEL SELECTOR — make the primary "which model am I using" control
- * obviously interactive. Violet-cyan gradient border + soft glow.
+ * MODEL SELECTOR — obvious violet-cyan gradient + soft glow
  * ══════════════════════════════════════════════════════════════════════ */
 button[aria-label*="model" i],
 button[aria-label*="Model" i],
@@ -139,12 +269,9 @@ button[aria-label*="Model" i],
 button[aria-haspopup="listbox"]:has(> span:not(:empty)) {
   position: relative !important;
   border: 1px solid rgba(139, 92, 246, 0.40) !important;
-  background:
-    linear-gradient(135deg, rgba(139, 92, 246, 0.12), rgba(34, 211, 238, 0.06)) !important;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.12), rgba(34, 211, 238, 0.06)) !important;
   color: var(--nimbus-cloud) !important;
-  box-shadow:
-    0 0 24px -8px rgba(139, 92, 246, 0.55),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+  box-shadow: 0 0 24px -8px rgba(139, 92, 246, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
   transition: all 200ms ease !important;
   font-weight: 500 !important;
 }
@@ -153,21 +280,15 @@ button[aria-label*="model" i]:hover,
 [data-testid*="model-selector"] > button:hover,
 [data-testid*="model-selector"] button:first-of-type:hover {
   border-color: rgba(139, 92, 246, 0.70) !important;
-  box-shadow:
-    0 0 28px -6px rgba(139, 92, 246, 0.75),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
-  background:
-    linear-gradient(135deg, rgba(139, 92, 246, 0.20), rgba(34, 211, 238, 0.10)) !important;
+  box-shadow: 0 0 28px -6px rgba(139, 92, 246, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.20), rgba(34, 211, 238, 0.10)) !important;
 }
 
 /* ══════════════════════════════════════════════════════════════════════
- * LOGIN / SIGN-UP SHELL — aggressive class-level override
+ * LOGIN / SIGN-UP SHELL
  * ══════════════════════════════════════════════════════════════════════ */
-html, body {
-  color: var(--nimbus-cloud) !important;
-}
+html, body { color: var(--nimbus-cloud) !important; }
 
-/* Login-page shell */
 .min-h-screen,
 .h-screen,
 main.min-h-full,
@@ -176,15 +297,10 @@ main.min-h-full,
 [class*="bg-gray-100"],
 [class*="bg-slate-50"] {
   background: var(--nimbus-ink) !important;
-  background-image: radial-gradient(
-    circle at 30% 20%, rgba(139, 92, 246, 0.14), transparent 45%
-  ), radial-gradient(
-    circle at 80% 70%, rgba(34, 211, 238, 0.10), transparent 45%
-  ) !important;
+  background-image: radial-gradient(circle at 30% 20%, rgba(139, 92, 246, 0.14), transparent 45%), radial-gradient(circle at 80% 70%, rgba(34, 211, 238, 0.10), transparent 45%) !important;
   color: var(--nimbus-cloud);
 }
 
-/* Login card container itself (typically an inner div) */
 .min-h-screen > div,
 form,
 .rounded-xl,
@@ -196,22 +312,8 @@ form,
   color: var(--nimbus-cloud);
 }
 
-/* Login form headings */
-h1, h2, h3, .text-3xl, .text-2xl {
-  color: var(--nimbus-cloud) !important;
-}
+h1, h2, h3, .text-3xl, .text-2xl { color: var(--nimbus-cloud) !important; }
 
-/* Inputs */
-input[type="text"],
-input[type="email"],
-input[type="password"] {
-  background: rgba(5, 7, 14, 0.9) !important;
-  border-color: rgba(139, 92, 246, 0.30) !important;
-  color: var(--nimbus-cloud) !important;
-}
-input::placeholder { color: rgba(229, 233, 245, 0.4) !important; }
-
-/* KILL the default LibreChat emerald / green / teal button — force Nimbus violet */
 .bg-green-500, .bg-green-600, .bg-green-700,
 .bg-emerald-400, .bg-emerald-500, .bg-emerald-600, .bg-emerald-700,
 .bg-teal-500, .bg-teal-600,
@@ -234,13 +336,7 @@ button[class*="bg-teal"]:hover {
   background-image: linear-gradient(135deg, var(--nimbus-violet-2) 0%, var(--nimbus-violet) 100%) !important;
 }
 
-/* Sign-up / links */
-a, .text-emerald-500, .text-emerald-600, .text-green-600 {
-  color: var(--nimbus-cyan) !important;
-}
+a, .text-emerald-500, .text-emerald-600, .text-green-600 { color: var(--nimbus-cyan) !important; }
 a:hover { color: var(--nimbus-violet-2) !important; }
 
-/* Labels above input fields — LibreChat renders these as dark chips */
-label, .text-gray-600, .text-gray-700, .text-gray-800, .text-gray-900 {
-  color: var(--nimbus-cloud) !important;
-}
+label, .text-gray-600, .text-gray-700, .text-gray-800, .text-gray-900 { color: var(--nimbus-cloud) !important; }
