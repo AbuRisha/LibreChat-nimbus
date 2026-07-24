@@ -7,7 +7,6 @@ cache: true
 # / uvx commands work out of the box.
 mcpServers:
   # Web fetch tool — models can pull arbitrary URLs and extract content.
-  # Powers "summarize this page", "check this doc", "grab data from that API".
   fetch:
     command: uvx
     args:
@@ -17,8 +16,7 @@ mcpServers:
     chatMenu: true
     description: Fetch and read the contents of any URL as markdown or plain text.
 
-  # Structured chain-of-thought scratchpad — model can lay out a plan step-
-  # by-step before executing, same UX as Claude's thinking-out-loud mode.
+  # Structured chain-of-thought scratchpad.
   sequential-thinking:
     command: npx
     args:
@@ -29,8 +27,7 @@ mcpServers:
     chatMenu: true
     description: Break a problem into ordered thinking steps before answering.
 
-  # Current-time tool — surprisingly useful for scheduling, greetings, log
-  # timestamps, "how long since X" answers. Model gets aware of real clock.
+  # Current-time tool.
   time:
     command: uvx
     args:
@@ -41,9 +38,7 @@ mcpServers:
     chatMenu: true
     description: Ask for the current time in any timezone or compute time deltas.
 
-  # Persistent key-value memory graph — models can save + recall arbitrary
-  # facts across turns / sessions. Complements the native personalization
-  # memory (which is opinionated + short) with unbounded factual storage.
+  # Persistent key-value memory graph.
   persistent-memory:
     command: npx
     args:
@@ -54,9 +49,7 @@ mcpServers:
     chatMenu: true
     description: Save/read/link arbitrary facts + entities the model wants to remember.
 
-  # Real browser control via Playwright — models can navigate URLs, click,
-  # type, screenshot, extract page structure. Same primitives as Claude
-  # Code's Chrome MCP. Bootstraps its own headless Chromium on first use.
+  # Real browser control via Playwright.
   browser:
     command: npx
     args:
@@ -70,8 +63,6 @@ mcpServers:
     description: Browse the web headlessly — navigate, click, type, screenshot, extract.
 
 # ChatGPT-style persistent memory (LibreChat native subsystem).
-# Model can auto-save user preferences and Nimbus injects them into system
-# context on every turn. Users manage memories in Settings > Personalization.
 memory:
   disabled: false
   personalize: true
@@ -94,83 +85,10 @@ memory:
       style, ongoing projects). Never save transient details, secrets,
       or one-off requests.
 
-# Conversation-starter presets — appear as quick-select modes in the UI.
-modelSpecs:
-  enforce: false
-  prioritize: true
-  list:
-    - name: 'nimbus-scroll-design'
-      label: 'Scroll Designer'
-      description: 'Best-in-class scroll-triggered heroes + parallax + reveal.'
-      preset:
-        endpoint: 'Nimbus'
-        model: 'anthropic/claude-sonnet-5'
-        promptPrefix: |
-          You are Nimbus's scroll-design specialist. Every layout you produce uses Intersection Observer for reveal-on-scroll (with sensible thresholds and stagger), sticky positioning for anchored heroes and side rails, transform+translate for parallax layers (max 3 depths), CSS scroll-linked animations where supported, and prefers-reduced-motion fallbacks. Never use scroll-jacking. Every animation lasts 300-800ms with easeOut. Ship real code; no placeholders.
-    - name: 'nimbus-code-review'
-      label: 'Code Reviewer'
-      description: 'Adversarial line-by-line audit with concrete failure scenarios.'
-      preset:
-        endpoint: 'Nimbus'
-        model: 'anthropic/claude-opus-4.8'
-        promptPrefix: |
-          You are Nimbus's code reviewer. Read every changed line. Flag: (1) actual bugs with a concrete failure scenario, (2) security issues (auth, SSRF, XSS, SQLi, secrets in logs), (3) performance smells with big-O reasoning, (4) readability with a specific rewrite. NEVER approve without reading. Prioritize by user-visible impact. Cite file:line for every finding.
-    - name: 'nimbus-instant-concept'
-      label: 'Instant Concept'
-      description: 'Prompt-to-Awwwards-site with clarify chips if needed.'
-      preset:
-        endpoint: 'Nimbus'
-        model: 'anthropic/claude-sonnet-5'
-        promptPrefix: |
-          You are Nimbus's Instant Concept specialist. If the prompt is ambiguous, ask 2-4 targeted questions with chip options (never more). If clear, produce a complete, opinionated, best-in-class implementation with: real content (never Lorem Ipsum), specific palette + typography direction, 1-2 signature interactions (scroll-reveal, sticky gallery, count-up stats), real responsive breakpoints. Ship the whole file, not a snippet.
-    - name: 'nimbus-research-agent'
-      label: 'Deep Research'
-      description: 'Multi-source research with cited synthesis — uses web fetch and browser tools.'
-      preset:
-        endpoint: 'Nimbus'
-        model: 'google/gemini-3.1-pro-preview'
-        promptPrefix: |
-          You are Nimbus's deep-research specialist. For every research request: (1) break it into 3-5 sub-questions, (2) use the fetch and browser tools to pull primary sources, (3) cross-reference at least 3 independent sources per claim, (4) cite every fact with [source: URL], (5) synthesize a structured report with Executive Summary → Key Findings → Evidence → Gaps → Next Steps. Never guess when you can look it up.
-    - name: 'nimbus-data-analyst'
-      label: 'Data Analyst'
-      description: 'Python/pandas analysis, chart generation, statistical reasoning.'
-      preset:
-        endpoint: 'Nimbus'
-        model: 'openai/gpt-5.4-mini'
-        promptPrefix: |
-          You are Nimbus's data analyst. When given data or a data question: (1) state the analytical goal, (2) write clean Python using pandas/numpy/matplotlib/seaborn, (3) explain each step concisely, (4) surface 3 non-obvious insights, (5) produce a chart or table for every key finding. Always validate data types, handle NaN, and state assumptions. Output runnable code blocks.
-    - name: 'nimbus-full-stack-builder'
-      label: 'Full-Stack Builder'
-      description: 'Complete apps: Next.js + Postgres + Auth + API in one shot.'
-      preset:
-        endpoint: 'Nimbus'
-        model: 'anthropic/claude-opus-4.8'
-        promptPrefix: |
-          You are Nimbus's full-stack architect. When asked to build an app: (1) clarify scope in ≤3 questions if ambiguous, (2) design the data model first (ERD + schema), (3) scaffold Next.js App Router with server components and server actions, (4) wire auth via NextAuth with the user's preferred provider, (5) implement CRUD with Prisma + Postgres, (6) add Zod validation on all inputs, (7) ship the full directory tree with real files — no TODO stubs. Always add .env.example.
-    - name: 'nimbus-security-auditor'
-      label: 'Security Auditor'
-      description: 'OWASP-focused deep audit with exploits and remediation.'
-      preset:
-        endpoint: 'Nimbus'
-        model: 'anthropic/claude-opus-4.8'
-        promptPrefix: |
-          You are Nimbus's adversarial security auditor. For every code review: check OWASP Top 10 (injection, broken auth, XSS, IDOR, SSRF, misconfiguration, secrets-in-logs, supply-chain), write a concrete PoC exploit for each finding, rate severity CRITICAL/HIGH/MEDIUM/LOW, provide a remediation diff. Never give false positives — if you can't write a PoC, it's not a real finding. Be thorough, be specific, show your work.
-    - name: 'nimbus-product-strategist'
-      label: 'Product Strategist'
-      description: 'PRDs, user stories, roadmaps and competitive positioning.'
-      preset:
-        endpoint: 'Nimbus'
-        model: 'openai/gpt-5.1'
-        promptPrefix: |
-          You are Nimbus's product strategist. Produce structured, founder-ready output: (1) one-sentence north star, (2) target user persona + their #1 pain, (3) problem statement vs current alternatives, (4) 3-tier feature set (must-have / should-have / nice-to-have) in MoSCoW, (5) success metrics (DAU, NPS, revenue, retention), (6) 90-day roadmap in 2-week sprints, (7) competitive positioning matrix. Never be vague — give a concrete recommendation for every decision.
-    - name: 'nimbus-debug-wizard'
-      label: 'Debug Wizard'
-      description: 'Root-cause diagnosis with minimal-repro and precise fix.'
-      preset:
-        endpoint: 'Nimbus'
-        model: 'anthropic/claude-sonnet-5'
-        promptPrefix: |
-          You are Nimbus's debug specialist. For every bug: (1) state the most likely root cause in one sentence, (2) list the top 3 alternative causes ranked by probability, (3) write a minimal reproducible example that isolates the bug, (4) give the exact fix with a before/after diff, (5) explain what invariant was violated and how to prevent recurrence. Never say "it could be many things" — commit to the most probable cause and justify it.
+# NOTE: modelSpecs (role presets like Scroll Designer, Code Reviewer, etc.)
+# have been REMOVED from the primary model picker. They were skills, not
+# models — cluttered the picker and confused new users. Will re-land as
+# a dedicated "Skills" side panel with auto-model-selection on activation.
 
 interface:
   privacyPolicy:
@@ -223,17 +141,24 @@ endpoints:
       baseURL: '${NIMBUS_API_BASE_URL}'
       models:
         default:
-          - 'anthropic/claude-sonnet-5'
+          # Anthropic — smartest to fastest
           - 'anthropic/claude-opus-4.8'
-          - 'anthropic/claude-haiku-4.5'
+          - 'anthropic/claude-sonnet-5'
           - 'anthropic/claude-fable-5'
+          - 'anthropic/claude-haiku-4.5'
+          # OpenAI — general + coding tier
+          - 'openai/gpt-5.1'
           - 'openai/gpt-5.4-mini'
           - 'openai/gpt-5-codex'
           - 'openai/gpt-5.3-codex'
-          - 'openai/gpt-5.1'
+          - 'openai/o4-mini'
+          # DeepSeek — Pro flagship + Flash newest
           - 'deepseek/deepseek-v4-pro'
+          - 'deepseek/deepseek-v4-flash'
+          # Moonshot — Kimi flagship + coding
           - 'moonshotai/kimi-k3'
           - 'moonshotai/kimi-k2.7-code'
+          # Google — Gemini flagship + fast
           - 'google/gemini-3.1-pro-preview'
           - 'google/gemini-3-flash-preview'
         fetch: true
