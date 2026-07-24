@@ -58,6 +58,9 @@ function Header() {
                   <a href="https://nimbusapi.net" className="hover:text-white transition">Home</a>
                   <a href="https://chat.nimbusapi.net" className="text-white font-medium">Chat</a>
                   <a href="https://builder.nimbusapi.net" className="hover:text-white transition">Builder</a>
+                  <a href="https://nimbusapi.net/dashboard/image" className="hover:text-white transition">Image</a>
+                  <a href="https://nimbusapi.net/dashboard/video" className="hover:text-white transition">Video</a>
+                  <a href="https://nimbusapi.net/docs" className="hover:text-white transition">Docs</a>
                   <a href="https://nimbusapi.net/dashboard" className="hover:text-white transition">Dashboard</a>
                 </nav>
               )}
