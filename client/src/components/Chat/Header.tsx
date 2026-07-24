@@ -9,6 +9,7 @@ import { OpenSidebar, PresetsMenu } from './Menus';
 import BookmarkMenu from './Menus/BookmarkMenu';
 import { TemporaryChat } from './TemporaryChat';
 import AddMultiConvo from './AddMultiConvo';
+import SummarizeButton from './SummarizeButton';
 import { useHasAccess } from '~/hooks';
 import { cn } from '~/utils';
 import store from '~/store';
@@ -70,6 +71,7 @@ function Header() {
               {hasAccessToMultiConvo === true && <AddMultiConvo />}
               {isSmallScreen && (
                 <>
+                  <SummarizeButton />
                   <ExportAndShareMenu
                     isSharedButtonEnabled={startupConfig?.sharedLinksEnabled ?? false}
                   />
@@ -82,6 +84,7 @@ function Header() {
 
         {!isSmallScreen && (
           <div className="flex items-center gap-2">
+            <SummarizeButton />
             <ExportAndShareMenu
               isSharedButtonEnabled={startupConfig?.sharedLinksEnabled ?? false}
             />
