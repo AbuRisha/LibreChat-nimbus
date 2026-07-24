@@ -1,5 +1,4 @@
-import { useMemo, useState, useEffect, useCallback } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useMemo, useCallback } from 'react';
 import { Button } from '@librechat/client';
 import { TriangleAlert } from 'lucide-react';
 import {
@@ -9,14 +8,12 @@ import {
   actionDomainSeparator,
 } from 'librechat-data-provider';
 import type { TAttachment } from 'librechat-data-provider';
-import { useLocalize, useProgress, useExpandCollapse } from '~/hooks';
+import { useLocalize, useProgress } from '~/hooks';
 import { ToolIcon, getToolIconType, isError } from './ToolOutput';
 import { useMCPIconMap } from '~/hooks/MCP';
 import { AttachmentGroup } from './Parts';
-import ToolCallInfo from './ToolCallInfo';
-import ProgressText from './ProgressText';
+import AgentTrace from '~/components/Tools/AgentTrace';
 import { logger } from '~/utils';
-import store from '~/store';
 
 export default function ToolCall({
   initialProgress = 0.1,
@@ -42,16 +39,6 @@ export default function ToolCall({
   onExpand?: () => void;
 }) {
   const localize = useLocalize();
-  const autoExpand = useRecoilValue(store.autoExpandTools);
-  const hasOutput = (output?.length ?? 0) > 0;
-  const [showInfo, setShowInfo] = useState(() => autoExpand && hasOutput);
-  const { style: expandStyle, ref: expandRef } = useExpandCollapse(showInfo);
-
-  useEffect(() => {
-    if (autoExpand && hasOutput) {
-      setShowInfo(true);
-    }
-  }, [autoExpand, hasOutput]);
 
   const parsedAuthUrl = useMemo(() => {
     if (!auth) {
@@ -153,27 +140,12 @@ export default function ToolCall({
     }
   }, [_args]) as string | undefined;
 
-  const hasInfo = useMemo(
-    () => (args?.length ?? 0) > 0 || (output?.length ?? 0) > 0,
-    [args, output],
-  );
-
   const authDomain = useMemo(() => {
     return parsedAuthUrl?.hostname ?? '';
   }, [parsedAuthUrl]);
 
   const progress = useProgress(initialProgress);
   const showCancelled = cancelled || (errorState && !output);
-
-  const handleToggleInfo = useCallback(() => {
-    setShowInfo((prev) => {
-      const next = !prev;
-      if (next) {
-        onExpand?.();
-      }
-      return next;
-    });
-  }, [onExpand]);
 
   const subtitle = useMemo(() => {
     if (isMCPToolCall && mcpServerName) {
@@ -202,6 +174,8 @@ export default function ToolCall({
     return null;
   }
 
+  const isRunning = progress < 1 && !showCancelled && !errorState;
+
   return (
     <>
       <span className="sr-only" aria-live="polite" aria-atomic="true">
@@ -214,42 +188,23 @@ export default function ToolCall({
           return getFinishedText();
         })()}
       </span>
-      <div className="relative my-1.5 flex h-5 shrink-0 items-center gap-2.5">
-        <ProgressText
-          progress={progress}
-          onClick={handleToggleInfo}
-          inProgressText={
-            function_name
-              ? localize('com_assistants_running_var', { 0: function_name })
-              : localize('com_assistants_running_action')
-          }
-          authText={
-            !showCancelled && authDomain.length > 0 ? localize('com_ui_requires_auth') : undefined
-          }
-          finishedText={getFinishedText()}
-          subtitle={subtitle}
-          errorSuffix={errorState && !cancelled ? localize('com_ui_tool_failed') : undefined}
-          icon={
-            <ToolIcon
-              type={toolIconType}
-              iconUrl={mcpIconUrl}
-              isAnimating={progress < 1 && !showCancelled && !errorState}
-            />
-          }
-          hasInput={hasInfo}
-          isExpanded={showInfo}
-          error={showCancelled}
-        />
-      </div>
-      <div style={expandStyle}>
-        <div className="overflow-hidden" ref={expandRef}>
-          {hasInfo && (
-            <div className="my-2 overflow-hidden rounded-lg border border-border-light bg-surface-secondary">
-              <ToolCallInfo input={args ?? ''} output={output} attachments={attachments} />
-            </div>
-          )}
-        </div>
-      </div>
+      <AgentTrace
+        name={function_name || name}
+        args={args ?? ''}
+        output={output}
+        isRunning={isRunning}
+        isError={errorState}
+        isCancelled={cancelled}
+        icon={
+          <ToolIcon
+            type={toolIconType}
+            iconUrl={mcpIconUrl}
+            isAnimating={isRunning}
+          />
+        }
+        subtitle={subtitle}
+        onExpand={onExpand}
+      />
       {auth != null && auth && progress < 1 && !showCancelled && (
         <div className="flex w-full flex-col gap-2.5">
           <div className="mb-1 mt-2">
