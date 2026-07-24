@@ -75,11 +75,95 @@ button[data-testid='send-button']:hover {
   background: var(--nimbus-ink);
 }
 
-/* Login / signup page — aggressive class-level override so it stops looking
- * like default LibreChat (white card + emerald green button). Every route
- * mounted at /login or /register uses these classes; force them Nimbus. */
-html, body {
+/* ══════════════════════════════════════════════════════════════════════
+ * TOOLTIP CONTRAST — belt-and-suspenders override for @librechat/client
+ * Tooltip. packages/client is a workspace pkg, not always rebuilt in the
+ * client's `npm run frontend`, so patching packages/client/Tooltip.css
+ * alone isn't reliable. Force it here with high specificity.
+ * ══════════════════════════════════════════════════════════════════════ */
+[role="tooltip"],
+.tooltip,
+.tooltip:where(.dark, .dark *),
+[data-radix-tooltip-content],
+[data-radix-popper-content-wrapper] > [role="tooltip"],
+[data-side][data-align][data-state="delayed-open"],
+[data-side][data-align][data-state="instant-open"] {
+  background: rgba(11, 18, 32, 0.96) !important;
+  color: var(--nimbus-cloud) !important;
+  border: 1px solid rgba(139, 92, 246, 0.32) !important;
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.04) !important;
+  padding: 0.375rem 0.625rem !important;
+  border-radius: 0.5rem !important;
+  font-weight: 500 !important;
+  font-size: 0.75rem !important;
+  line-height: 1.1rem !important;
+  text-shadow: none !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  max-width: 20rem !important;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+ * CHAT AURORA BACKGROUND — no more flat black. Fixed radial-gradient
+ * layer of violet + cyan orbs, subtle grid overlay for depth. Sits
+ * behind every panel; content surfaces stay solid ink so text is
+ * always readable.
+ * ══════════════════════════════════════════════════════════════════════ */
+body {
   background: var(--nimbus-ink) !important;
+  background-image:
+    radial-gradient(ellipse 55% 40% at 18% 12%, rgba(139, 92, 246, 0.22), transparent 62%),
+    radial-gradient(ellipse 45% 40% at 82% 88%, rgba(34, 211, 238, 0.18), transparent 62%),
+    radial-gradient(ellipse 100% 50% at 50% 100%, rgba(139, 92, 246, 0.12), transparent 70%),
+    linear-gradient(rgba(58, 107, 184, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(58, 107, 184, 0.04) 1px, transparent 1px) !important;
+  background-size: auto, auto, auto, 80px 80px, 80px 80px !important;
+  background-attachment: fixed !important;
+}
+
+/* Make sure panels that don't specify a bg remain readable on the aurora */
+main, .chat-panel {
+  background: transparent !important;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+ * MODEL SELECTOR — make the primary "which model am I using" control
+ * obviously interactive. Violet-cyan gradient border + soft glow.
+ * ══════════════════════════════════════════════════════════════════════ */
+button[aria-label*="model" i],
+button[aria-label*="Model" i],
+[data-testid*="model-selector"] > button,
+[data-testid*="model-selector"] button:first-of-type,
+button[aria-haspopup="listbox"]:has(> span:not(:empty)) {
+  position: relative !important;
+  border: 1px solid rgba(139, 92, 246, 0.40) !important;
+  background:
+    linear-gradient(135deg, rgba(139, 92, 246, 0.12), rgba(34, 211, 238, 0.06)) !important;
+  color: var(--nimbus-cloud) !important;
+  box-shadow:
+    0 0 24px -8px rgba(139, 92, 246, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+  transition: all 200ms ease !important;
+  font-weight: 500 !important;
+}
+
+button[aria-label*="model" i]:hover,
+[data-testid*="model-selector"] > button:hover,
+[data-testid*="model-selector"] button:first-of-type:hover {
+  border-color: rgba(139, 92, 246, 0.70) !important;
+  box-shadow:
+    0 0 28px -6px rgba(139, 92, 246, 0.75),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+  background:
+    linear-gradient(135deg, rgba(139, 92, 246, 0.20), rgba(34, 211, 238, 0.10)) !important;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+ * LOGIN / SIGN-UP SHELL — aggressive class-level override
+ * ══════════════════════════════════════════════════════════════════════ */
+html, body {
   color: var(--nimbus-cloud) !important;
 }
 
