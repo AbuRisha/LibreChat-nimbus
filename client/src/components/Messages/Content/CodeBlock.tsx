@@ -5,6 +5,7 @@ import FloatingCodeBar from '~/components/Messages/Content/FloatingCodeBar';
 import ResultSwitcher from '~/components/Messages/Content/ResultSwitcher';
 import { useToolCallsMapContext, useMessageContext } from '~/Providers';
 import { LogContent } from '~/components/Chat/Messages/Content/Parts';
+import PyodideRunner from '~/components/Messages/Content/PyodideRunner';
 import CodeBar from '~/components/Messages/Content/CodeBar';
 import { useLocalize } from '~/hooks';
 import cn from '~/utils/cn';
@@ -129,6 +130,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
           {codeChildren}
         </code>
       </div>
+      <PyodideRunner lang={lang ?? ''} codeRef={codeRef} />
       <FloatingCodeBar
         lang={lang}
         error={error}
