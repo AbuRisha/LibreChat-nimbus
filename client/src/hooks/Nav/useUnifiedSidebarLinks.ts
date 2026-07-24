@@ -1,11 +1,12 @@
 import { useMemo } from 'react';
 import { useRecoilValue } from 'recoil';
-import { MessagesSquare } from 'lucide-react';
+import { MessagesSquare, SquareCheckBig } from 'lucide-react';
 import { useUserKeyQuery } from 'librechat-data-provider/react-query';
 import { getConfigDefaults, getEndpointField } from 'librechat-data-provider';
 import type { TEndpointsConfig } from 'librechat-data-provider';
 import type { NavLink } from '~/common';
 import ConversationsSection from '~/components/UnifiedSidebar/ConversationsSection';
+import TaskTracker from '~/components/Nav/TaskTracker';
 import { useGetEndpointsQuery, useGetStartupConfig } from '~/data-provider';
 import useSideNavLinks from '~/hooks/Nav/useSideNavLinks';
 import store from '~/store';
@@ -58,7 +59,15 @@ export default function useUnifiedSidebarLinks() {
       Component: ConversationsSection,
     };
 
-    return [conversationLink, ...sideNavLinks];
+    const tasksLink: NavLink = {
+      title: 'com_ui_tasks',
+      label: '',
+      icon: SquareCheckBig,
+      id: 'tasks',
+      Component: TaskTracker,
+    };
+
+    return [conversationLink, tasksLink, ...sideNavLinks];
   }, [sideNavLinks]);
 
   return links;
