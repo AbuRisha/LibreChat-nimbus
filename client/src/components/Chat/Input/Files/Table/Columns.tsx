@@ -1,14 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { ArrowUpDown, ArrowUp, ArrowDown, Database } from 'lucide-react';
 import { FileSources, FileContext } from 'librechat-data-provider';
-import {
-  Button,
-  Checkbox,
-  useMediaQuery,
-  TooltipAnchor,
-  AzureMinimalIcon,
-  OpenAIMinimalIcon,
-} from '@librechat/client';
+import { Button, Checkbox, useMediaQuery, TooltipAnchor } from '@librechat/client';
 import type { ColumnDef } from '@tanstack/react-table';
 import type { TFile } from 'librechat-data-provider';
 import ImagePreview from '~/components/Chat/Input/Files/ImagePreview';
@@ -195,18 +188,15 @@ export const columns: ColumnDef<TFile>[] = [
     cell: ({ row }) => {
       const localize = useLocalize();
       const { source } = row.original;
-      if (source === FileSources.openai) {
+      // Nimbus brand rule: never expose upstream vendor names (Azure, OpenAI,
+      // OpenRouter, etc.) in the customer-facing UI. All cloud-stored files
+      // are labeled "Nimbus" regardless of the underlying provider. Vendor
+      // labels remain available inside the Builder's Advanced BYOK panel.
+      if (source === FileSources.openai || source === FileSources.azure) {
         return (
           <div className="flex flex-wrap items-center gap-2">
-            <OpenAIMinimalIcon className="icon-sm text-green-600/50" />
-            {'OpenAI'}
-          </div>
-        );
-      } else if (source === FileSources.azure) {
-        return (
-          <div className="flex flex-wrap items-center gap-2">
-            <AzureMinimalIcon className="icon-sm text-cyan-700" />
-            {'Azure'}
+            <Database className="icon-sm text-nimbus-cyan" aria-hidden="true" />
+            {'Nimbus'}
           </div>
         );
       }
