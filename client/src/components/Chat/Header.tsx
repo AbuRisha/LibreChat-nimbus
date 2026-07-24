@@ -1,4 +1,5 @@
 import { memo, useMemo } from 'react';
+import { Sparkles } from 'lucide-react';
 import { useRecoilValue } from 'recoil';
 import { useMediaQuery } from '@librechat/client';
 import { getConfigDefaults, PermissionTypes, Permissions } from 'librechat-data-provider';
@@ -10,6 +11,7 @@ import BookmarkMenu from './Menus/BookmarkMenu';
 import { TemporaryChat } from './TemporaryChat';
 import AddMultiConvo from './AddMultiConvo';
 import SummarizeButton from './SummarizeButton';
+import AssistantsMarketplace, { useAssistantsMarketplace } from '~/components/Nav/AssistantsMarketplace';
 import { useHasAccess } from '~/hooks';
 import { cn } from '~/utils';
 import store from '~/store';
@@ -19,6 +21,7 @@ const defaultInterface = getConfigDefaults().interface;
 function Header() {
   const { data: startupConfig } = useGetStartupConfig();
   const navVisible = useRecoilValue(store.sidebarExpanded);
+  const { open, openMarketplace, closeMarketplace } = useAssistantsMarketplace();
 
   const interfaceConfig = useMemo(
     () => startupConfig?.interface ?? defaultInterface,
@@ -69,6 +72,14 @@ function Header() {
               {interfaceConfig.presets === true && interfaceConfig.modelSelect && <PresetsMenu />}
               {hasAccessToBookmarks === true && <BookmarkMenu />}
               {hasAccessToMultiConvo === true && <AddMultiConvo />}
+              <button
+                onClick={openMarketplace}
+                aria-label="Open Assistants Marketplace"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-violet-500/30 bg-violet-500/10 px-2.5 py-1.5 text-xs text-violet-300 transition-colors hover:bg-violet-500/20"
+              >
+                <Sparkles size={13} />
+                Assistants
+              </button>
               {isSmallScreen && (
                 <>
                   <SummarizeButton />
@@ -94,6 +105,7 @@ function Header() {
       </div>
       {/* Empty div for spacing */}
       <div />
+      <AssistantsMarketplace open={open} onClose={closeMarketplace} />
     </div>
   );
 }
