@@ -322,3 +322,124 @@ p.whitespace-pre-wrap a, li a {
 .dark p.whitespace-pre-wrap a, .dark li a {
   color: #52a0ff;
 }
+
+/* =========================================================
+ * #39 — Mobile polish: touch targets, drawer sidebar,
+ *        composer expand, Nimbus violet scrollbars
+ * ========================================================= */
+
+/* (a) Touch targets — minimum 44x44 px on mobile (WCAG 2.5.5) */
+@media (max-width: 768px) {
+  button,
+  a[role="button"],
+  [role="tab"],
+  [role="menuitem"],
+  [role="option"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Prevent double-tap zoom delay on interactive elements */
+  button,
+  a,
+  [role="button"],
+  [role="tab"],
+  [role="menuitem"] {
+    touch-action: manipulation;
+  }
+}
+
+/* (b) Sidebar drawer — slide-in with translucent backdrop on mobile.
+ *     Overrides the default opacity-based hide/show with a transform-based
+ *     slide so the panel glides in from the left rather than fading. */
+@media (max-width: 767px) {
+  /* Use transform instead of opacity for the hide state */
+  .nav {
+    opacity: 1;
+    transform: translateX(-100%);
+    transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.22s ease;
+  }
+
+  .nav.active {
+    transform: translateX(0);
+    box-shadow: 4px 0 32px rgba(0, 0, 0, 0.55),
+                2px 0 12px rgba(139, 92, 246, 0.18);
+  }
+
+  /* Backdrop blur on the mask overlay when the drawer is open */
+  .nav-mask {
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+    transition: opacity 0.3s ease,
+                backdrop-filter 0.3s ease,
+                -webkit-backdrop-filter 0.3s ease;
+  }
+
+  .nav-mask.active {
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+  }
+}
+
+/* (c) Chat composer expand on focus — on mobile the textarea should grow
+ *     when focused to give the user more vertical writing space. */
+@media (max-width: 768px) {
+  /* Grow the textarea when the user taps into it */
+  textarea#prompt-textarea:focus,
+  textarea[data-testid="text-input"]:focus,
+  .chat-textarea:focus {
+    min-height: 96px;
+    transition: min-height 0.2s ease;
+  }
+
+  /* Grow the outer form wrapper when any child is focused */
+  form:focus-within textarea#prompt-textarea,
+  [data-testid="chat-input-container"]:focus-within textarea {
+    min-height: 96px;
+  }
+}
+
+/* (d) Nimbus violet scrollbars for WebKit browsers (Chrome, Edge, Safari).
+ *     Firefox gets the thin variant via scrollbar-width.
+ *     .hide-scrollbar (defined above) still wins for panels that hide them. */
+:root {
+  --nimbus-scrollbar-thumb: rgba(139, 92, 246, 0.40);
+  --nimbus-scrollbar-thumb-hover: rgba(139, 92, 246, 0.70);
+}
+
+/* Firefox — thin, violet thumb */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--nimbus-scrollbar-thumb) transparent;
+}
+
+/* WebKit — 6px slim track with Nimbus violet */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--nimbus-scrollbar-thumb);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--nimbus-scrollbar-thumb-hover);
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Re-assert the full-hide class so it still wins over the global thumb */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
