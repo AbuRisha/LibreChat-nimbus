@@ -11,6 +11,7 @@ import BookmarkMenu from './Menus/BookmarkMenu';
 import { TemporaryChat } from './TemporaryChat';
 import AddMultiConvo from './AddMultiConvo';
 import SummarizeButton from './SummarizeButton';
+import MidGenModelSwitch from './MidGenModelSwitch';
 import AssistantsMarketplace, { useAssistantsMarketplace } from '~/components/Nav/AssistantsMarketplace';
 import { useHasAccess } from '~/hooks';
 import { cn } from '~/utils';
@@ -82,6 +83,7 @@ function Header() {
               </button>
               {isSmallScreen && (
                 <>
+                  <MidGenModelSwitch />
                   <SummarizeButton />
                   <ExportAndShareMenu
                     isSharedButtonEnabled={startupConfig?.sharedLinksEnabled ?? false}
@@ -95,6 +97,7 @@ function Header() {
 
         {!isSmallScreen && (
           <div className="flex items-center gap-2">
+            <MidGenModelSwitch />
             <SummarizeButton />
             <ExportAndShareMenu
               isSharedButtonEnabled={startupConfig?.sharedLinksEnabled ?? false}
